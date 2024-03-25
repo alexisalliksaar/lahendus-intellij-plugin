@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg xmlns="http://www.w3.org/2000/svg" width="13px" height="13px" viewBox="0 0 13 13" version="1.1">
+<g id="surface1">
+<path fill="#6E6E6E" fill-rule="evenodd" d="
+M 6.5 0
+A 6.5 6.5 0 0 1 6.5 13
+A 6.5 6.5 0 0 1 6.5 0
+
+M 4.6 1.2 V 4.95 H 8.4 V 3.75 L 5.3 1.2
+
+M 8.4 1.2 V 2.9 L 6.2, 1.2
+
+M 2.05 6.3 H 5.8 V 10.05 H 2.05
+
+M 10.95 6.3 H 7.2 V 10.05 H 10.95"/>
+</g>
+</svg>
