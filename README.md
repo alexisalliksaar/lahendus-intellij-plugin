@@ -1,0 +1,1 @@
+# lahendus-intellij-plugin
