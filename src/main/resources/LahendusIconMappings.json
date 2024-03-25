@@ -1,0 +1,25 @@
+{
+  "icons": {
+    "expui": {
+      "common": {
+        "refresh.svg": "icons/refresh.svg"
+      },
+      "exercisesTab": {
+        "completed.svg": "icons/completed.svg",
+        "login.svg": "icons/login.svg",
+        "logout.svg": "icons/logout.svg",
+        "started.svg": "icons/started.svg",
+        "unGraded.svg": "icons/unGraded.svg",
+        "unStarted.svg": "icons/unStarted.svg"
+      },
+      "selectedExerciseTab": {
+        "backToExercises.svg": "icons/backToExercises.svg",
+        "openInBrowser.svg": "icons/openInBrowser.svg",
+        "sendEditorToLahendus.svg": "icons/sendEditorToLahendus.svg"
+      },
+      "toolWindowLogo": {
+        "lahendusLogo.svg": "icons/lahendusLogo.svg"
+      }
+    }
+  }
+}

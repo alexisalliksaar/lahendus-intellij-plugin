@@ -1,0 +1,91 @@
+<!-- Plugin Configuration File. Read more: https://plugins.jetbrains.com/docs/intellij/plugin-configuration-file.html -->
+<idea-plugin>
+    <!-- Unique identifier of the plugin. It should be FQN. It cannot be changed between the plugin versions. -->
+    <id>ee.ut.lahendus.intellij</id>
+
+    <!-- Public plugin name should be written in Title Case.
+         Guidelines: https://plugins.jetbrains.com/docs/marketplace/plugin-overview-page.html#plugin-name -->
+    <name>Lahendus</name>
+
+    <!-- A displayed Vendor name or Organization ID displayed on the Plugins Page. -->
+    <vendor>Alexis Alliksaar</vendor>
+
+    <!-- Description of the plugin displayed on the Plugin Page and IDE Plugin Manager.
+         Simple HTML elements (text formatting, paragraphs, and lists) can be added inside of <![CDATA[ ]]> tag.
+         Guidelines: https://plugins.jetbrains.com/docs/marketplace/plugin-overview-page.html#plugin-description -->
+    <description><![CDATA[
+    Integrates the IntelliJ platform development environments with Lahendus, the students' homework submission environment of the University of Tartu.
+    <br/>
+    The plugin allows the students to check their progress in a course and submit their active editor contents for a solution right from the IDE.
+  ]]></description>
+
+    <!-- Product and plugin compatibility requirements.
+         Read more: https://plugins.jetbrains.com/docs/intellij/plugin-compatibility.html -->
+    <depends>com.intellij.modules.platform</depends>
+
+    <actions>
+        <action id="ee.ut.lahendus.intellij.ui.actions.LoginAction"
+                class="ee.ut.lahendus.intellij.ui.actions.LoginAction"
+                text="Log In"
+                icon="/icons/login.svg">
+        </action>
+        <action id="ee.ut.lahendus.intellij.ui.actions.LogoutAction"
+                class="ee.ut.lahendus.intellij.ui.actions.LogoutAction"
+                text="Log Out"
+                icon="/icons/logout.svg">
+        </action>
+        <action id="ee.ut.lahendus.intellij.ui.actions.RefreshExercisesAction"
+                class="ee.ut.lahendus.intellij.ui.actions.RefreshExercisesAction"
+                text="Refresh"
+                icon="/icons/refresh.svg">
+        </action>
+
+        <action id="ee.ut.lahendus.intellij.ui.actions.BackToExercisesAction"
+                class="ee.ut.lahendus.intellij.ui.actions.BackToExercisesAction"
+                text="Back"
+                icon="/icons/backToExercises.svg">
+        </action>
+        <action id="ee.ut.lahendus.intellij.ui.actions.RefreshSelectedExerciseAction"
+                class="ee.ut.lahendus.intellij.ui.actions.RefreshSelectedExerciseAction"
+                text="Refresh"
+                icon="/icons/refresh.svg">
+        </action>
+        <action id="ee.ut.lahendus.intellij.ui.actions.SendEditorToLahendusAction"
+                class="ee.ut.lahendus.intellij.ui.actions.SendEditorToLahendusAction"
+                text="Submit Active Editor Content to Lahendus"
+                icon="/icons/sendEditorToLahendus.svg">
+        </action>
+        <action id="ee.ut.lahendus.intellij.ui.actions.OpenInBrowserAction"
+                class="ee.ut.lahendus.intellij.ui.actions.OpenInBrowserAction"
+                text="Open Exercise in Browser"
+                icon="/icons/openInBrowser.svg">
+        </action>
+
+        <group id="ee.ut.lahendus.intellij.ui.actions.ExercisesActions">
+            <reference ref="ee.ut.lahendus.intellij.ui.actions.LoginAction"/>
+            <reference ref="ee.ut.lahendus.intellij.ui.actions.LogoutAction"/>
+            <separator/>
+            <reference ref="ee.ut.lahendus.intellij.ui.actions.RefreshExercisesAction"/>
+        </group>
+
+        <group id="ee.ut.lahendus.intellij.ui.actions.SelectedExerciseActions">
+            <reference ref="ee.ut.lahendus.intellij.ui.actions.BackToExercisesAction"/>
+            <reference ref="ee.ut.lahendus.intellij.ui.actions.RefreshSelectedExerciseAction"/>
+            <separator/>
+            <reference ref="ee.ut.lahendus.intellij.ui.actions.SendEditorToLahendusAction"/>
+            <reference ref="ee.ut.lahendus.intellij.ui.actions.OpenInBrowserAction"/>
+        </group>
+
+    </actions>
+
+    <extensions defaultExtensionNs="com.intellij">
+        <toolWindow factoryClass="ee.ut.lahendus.intellij.ui.LahendusWindowFactory"
+                    id="Lahendus"
+                    anchor="right"
+                    secondary="false"
+                    icon="/icons/lahendusLogo.svg"
+                    canCloseContents="true" />
+
+        <iconMapper mappingFile="LahendusIconMappings.json"/>
+    </extensions>
+</idea-plugin>
