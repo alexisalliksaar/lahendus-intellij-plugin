@@ -31,8 +31,8 @@ class AutoFeedback(
     )
 
     companion object Formatter {
-        private const val TAB = "   *"
-        private const val HALF_TAB = " *"
+        private const val TAB = "   * "
+        private const val HALF_TAB = "  "
         private const val INPUTS_MESSAGE = "Inputs provided to the program"
         private const val OUTPUTS_MESSAGE = "The program's full output"
         private const val EXCEPTION_MESSAGE = "There was an exception during the program's execution"
