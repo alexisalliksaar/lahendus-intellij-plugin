@@ -14,9 +14,15 @@
          Simple HTML elements (text formatting, paragraphs, and lists) can be added inside of <![CDATA[ ]]> tag.
          Guidelines: https://plugins.jetbrains.com/docs/marketplace/plugin-overview-page.html#plugin-description -->
     <description><![CDATA[
-    Integrates the IntelliJ platform development environments with Lahendus, the students' homework submission environment of the University of Tartu.
+    Integrates the Intellij Platform development environments with
+    <a href="https://lahendus.ut.ee/">Lahendus</a>,
+    a service operated by the
+    <a href="https://cs.ut.ee/en">Institute of Computer Science at the University of Tartu</a>,
+    where students submit their solutions for various exercises, such as their homework.
     <br/>
-    The plugin allows the students to check their progress in a course and submit their active editor contents for a solution right from the IDE.
+    <br/>
+    The plugin enables students to track their progress in completing exercises
+    and to submit the contents of their active editor directly from the IDE for a solution.
   ]]></description>
 
     <!-- Product and plugin compatibility requirements.
