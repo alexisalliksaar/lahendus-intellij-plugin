@@ -12,6 +12,9 @@ import com.intellij.ui.components.JBLoadingPanel
 import com.intellij.ui.components.JBScrollPane
 import com.intellij.ui.components.panels.VerticalBox
 import com.intellij.ui.dsl.builder.panel
+import com.intellij.ui.util.maximumWidth
+import com.intellij.ui.util.preferredHeight
+import com.intellij.util.ui.JBDimension
 import com.intellij.util.ui.JBFont
 import com.intellij.util.ui.JBUI
 import ee.ut.lahendus.intellij.LahendusApiService
@@ -203,6 +206,7 @@ class ExercisesTab(val project: Project) : SimpleToolWindowPanel(true), Disposab
                 })
 
                 val exerciseLinkPanel = ExerciseLinkPanel(courseExercise, exerciseLink)
+                exerciseLinkPanel.maximumSize = JBDimension(exerciseLinkPanel.maximumWidth, exerciseLinkPanel.preferredHeight)
 
                 exercisesPanelListPanel!!.add(exerciseLinkPanel)
             }
