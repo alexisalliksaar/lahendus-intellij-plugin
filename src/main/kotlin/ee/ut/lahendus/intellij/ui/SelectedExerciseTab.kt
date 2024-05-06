@@ -106,7 +106,20 @@ class SelectedExerciseTab(val project: Project) : SimpleToolWindowPanel(true), D
 
         fun showDetailedExerciseInfo(detailedExercise: DetailedExercise) {
             titleLabel!!.text = detailedExercise.effectiveTitle
-            exerciseText!!.text = "<html><body>${detailedExercise.htmlText.orEmpty()}</body></html"
+            var exerciseDesc = detailedExercise.htmlText.orEmpty()
+            // If exercise description contains <details> html element, then replace it, as it poses challenges in rendering correctly
+            if (exerciseDesc.contains("</details>")) {
+                val startDetailsRegex = Regex("<details.*?>")
+                val endDetailsRegex = Regex("</details>")
+                val summaryRegex = Regex("<summary .*?>(?<title>.*?)</summary>")
+                exerciseDesc = exerciseDesc.replace(startDetailsRegex, "<div>")
+                exerciseDesc = exerciseDesc.replace(endDetailsRegex, "</div>")
+                exerciseDesc = exerciseDesc.replace(summaryRegex) {
+                    matchResult -> val title = matchResult.groups["title"]?.value ?: ""
+                    title
+                }
+            }
+            exerciseText!!.text = "<html><body>${exerciseDesc}</body></html"
         }
     }
 
