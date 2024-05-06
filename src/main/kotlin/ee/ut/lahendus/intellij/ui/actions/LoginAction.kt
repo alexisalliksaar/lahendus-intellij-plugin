@@ -11,8 +11,7 @@ import ee.ut.lahendus.intellij.ui.UiController
 
 class LoginAction : AnAction(), DumbAware {
     override fun actionPerformed(e: AnActionEvent) {
-        service<AuthenticationService>().startServer()
-        service<AuthenticationService>().getLoginAddress()?.let { address -> BrowserUtil.open(address) }
+        service<AuthenticationService>().startServerBG()
     }
 
     override fun update(e: AnActionEvent) {

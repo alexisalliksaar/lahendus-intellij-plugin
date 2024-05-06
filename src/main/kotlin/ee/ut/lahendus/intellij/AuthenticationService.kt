@@ -28,10 +28,11 @@ class AuthenticationService : Disposable {
     private var accessToken: AuthenticationToken? = null
     private var refreshToken: AuthenticationToken? = null
 
-    fun startServer() {
+    private fun startServer() {
 
         if (httpServer != null && port != null) {
             LOG.info("Authentication service already open on port: $port")
+            getLoginAddress()?.let { address -> BrowserUtil.open(address) }
             return
         }
 
@@ -41,11 +42,16 @@ class AuthenticationService : Disposable {
         httpServer?.createContext("/keycloak.json", KeyCloakHandler())
         httpServer?.createContext("/deliver-tokens", TokensHandler())
 
-        //httpServer?.executor = null
         httpServer?.start()
         port = httpServer?.address?.port
 
         LOG.info("Authentication server opened on port: $port")
+
+        getLoginAddress()?.let { address -> BrowserUtil.open(address) }
+    }
+
+    fun startServerBG() {
+        ResourceUtils.invokeOnBackgroundThread { startServer() }
     }
 
     fun closeServer(delay: Int = 0) {
@@ -55,7 +61,7 @@ class AuthenticationService : Disposable {
         LOG.info("Authentication server stopped")
     }
 
-    fun getLoginAddress(): String? {
+    private fun getLoginAddress(): String? {
         if (port == null) return null
         return "http://${LOCALHOST}:${port}/login"
     }

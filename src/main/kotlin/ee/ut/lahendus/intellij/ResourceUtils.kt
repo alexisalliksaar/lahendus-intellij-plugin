@@ -1,5 +1,6 @@
 package ee.ut.lahendus.intellij
 
+import com.intellij.openapi.application.ApplicationManager
 import com.intellij.openapi.diagnostic.logger
 
 private val LOG = logger<ResourceUtils>()
@@ -29,5 +30,9 @@ object ResourceUtils {
             }
         }
 
+    }
+
+    fun invokeOnBackgroundThread(callback: () -> Unit) {
+        ApplicationManager.getApplication().executeOnPooledThread { callback.invoke() }
     }
 }

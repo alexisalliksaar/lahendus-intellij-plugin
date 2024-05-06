@@ -18,7 +18,38 @@ private val LOG = logger<LahendusApiService>()
 @Service
 class LahendusApiService {
 
-    fun getDetailedExercise(courseId: Int, exerciseId: Int, project: Project) {
+    fun getDetailedExerciseBG(courseId: Int, exerciseId: Int, project: Project) {
+        ResourceUtils.invokeOnBackgroundThread {
+            getDetailedExercise(courseId, exerciseId, project)
+        }
+    }
+    fun getCourseExercisesBG(courseId: Int, project: Project) {
+        ResourceUtils.invokeOnBackgroundThread {
+            getCourseExercises(courseId, project)
+        }
+    }
+    fun getCoursesBG() {
+        ResourceUtils.invokeOnBackgroundThread {
+            getCourses()
+        }
+    }
+    fun getLatestSubmissionOrNullBG(detailedExercise: DetailedExercise, project: Project) {
+        ResourceUtils.invokeOnBackgroundThread {
+            getLatestSubmissionOrNull(detailedExercise, project)
+        }
+    }
+    fun awaitLatestSubmissionBG(detailedExercise: DetailedExercise, project: Project) {
+        ResourceUtils.invokeOnBackgroundThread {
+            awaitLatestSubmission(detailedExercise, project)
+        }
+    }
+    fun postSolutionBG(detailedExercise: DetailedExercise, solution: String, project: Project) {
+        ResourceUtils.invokeOnBackgroundThread {
+            postSolution(detailedExercise, solution, project)
+        }
+    }
+
+    private fun getDetailedExercise(courseId: Int, exerciseId: Int, project: Project) {
         val errorMessagePostfix = "exercise information"
         apiGetRequest(
             DETAILED_EXERCISE_API_PATH.format(courseId, exerciseId),
@@ -34,7 +65,7 @@ class LahendusApiService {
         }
     }
 
-    fun getCourseExercises(courseId: Int, project: Project) {
+    private fun getCourseExercises(courseId: Int, project: Project) {
         val errorMessagePostfix = "course exercises"
         apiGetRequest(
             COURSE_EXERCISES_API_PATH.format(courseId),
@@ -48,7 +79,7 @@ class LahendusApiService {
         }
     }
 
-    fun getCourses() {
+    private fun getCourses() {
         val errorMessagePostfix = "courses"
         apiGetRequest(
             COURSES_API_PATH,
@@ -61,7 +92,7 @@ class LahendusApiService {
         }
     }
 
-    fun getLatestSubmissionOrNull(detailedExercise: DetailedExercise, project: Project) {
+    private fun getLatestSubmissionOrNull(detailedExercise: DetailedExercise, project: Project) {
         val allSubmissions = getAllSubmissions(detailedExercise, 1, project)
         val submission = allSubmissions.firstOrNull()
 
@@ -94,7 +125,7 @@ class LahendusApiService {
         return result
     }
 
-    fun awaitLatestSubmission(detailedExercise: DetailedExercise, project: Project) {
+    private fun awaitLatestSubmission(detailedExercise: DetailedExercise, project: Project) {
         val errorMessagePostfix = "exercise submission"
 
         apiGetRequest(
@@ -112,7 +143,7 @@ class LahendusApiService {
         }
     }
 
-    fun postSolution(detailedExercise: DetailedExercise, solution: String, project: Project) {
+    private fun postSolution(detailedExercise: DetailedExercise, solution: String, project: Project) {
         val errorMessagePostfix = "submit solution"
 
         val requestBody = RequestUtils.asJson(

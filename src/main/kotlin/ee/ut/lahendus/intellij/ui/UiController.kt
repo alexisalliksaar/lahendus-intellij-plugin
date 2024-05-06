@@ -42,44 +42,48 @@ object UiController {
                 object : LahendusApplicationActionNotifier {
                     override fun authenticationFailed() {
                         userAuthenticated = false
-                        invokeLater {
+                        invokeLaterUI {
                             exercisesTab.showAuthenticationFailedMessage()
                         }
                     }
 
                     override fun reAuthenticationRequired() {
                         stopTabsIfLoading(exercisesTab.project)
-                        toolWindowNotification(
-                            "Please authenticate again",
-                            exercisesTab.project, MessageType.WARNING
-                        )
                         userAuthenticated = false
-                        invokeLater {
+                        invokeLaterUI {
+                            toolWindowNotification(
+                                "Please authenticate again",
+                                exercisesTab.project, MessageType.WARNING
+                            )
                             exercisesTab.showReAuthenticateMessage()
                         }
                     }
 
                     override fun courses(courses: List<Course>?) {
-                        invokeLater {
+                        invokeLaterUI {
                             exercisesTab.showCourses(courses)
                         }
                     }
 
                     override fun loggedOut() {
                         userAuthenticated = false
-                        invokeLater {
+                        invokeLaterUI {
                             exercisesTab.showLoggedOutMessage()
                         }
                     }
 
                     override fun networkErrorMessage() {
-                        stopTabsIfLoading(exercisesTab.project)
-                        showNetworkErrorMessage(exercisesTab.project)
+                        invokeLaterUI {
+                            stopTabsIfLoading(exercisesTab.project)
+                            showNetworkErrorMessage(exercisesTab.project)
+                        }
                     }
 
                     override fun requestFailed(message: String) {
+                        invokeLaterUI {
                         stopTabsIfLoading(exercisesTab.project)
                         showRequestFailedMessage(message, exercisesTab.project)
+                            }
                     }
                 })
 
@@ -88,7 +92,7 @@ object UiController {
             .subscribe(LahendusProjectActionNotifier.LAHENDUS_PROJECT_ACTION_TOPIC,
                 object : LahendusProjectActionNotifier {
                     override fun courseExercises(courseExercises: List<CourseExercise>?) {
-                        invokeLater {
+                        invokeLaterUI {
                             exercisesTab.showExercises(courseExercises)
                         }
                     }
@@ -108,27 +112,31 @@ object UiController {
                             )
                             selectedExerciseTab = selectedExerciseTabContent.component as? SelectedExerciseTab
                             selectedExerciseTab!!.populateExerciseInfoContent(detailedExercise)
-                            invokeLater {
+                            invokeLaterUI {
                                 toolWindow.contentManager.addContent(selectedExerciseTabContent)
                                 toolWindow.contentManager.setSelectedContent(selectedExerciseTabContent)
                             }
                         } else {
-                            selectedExerciseTab.populateExerciseInfoContent(detailedExercise)
-                            selectedExerciseTabContent!!.displayName = detailedExercise.effectiveTitle
-                            invokeLater {
+                            invokeLaterUI {
+                                selectedExerciseTab.populateExerciseInfoContent(detailedExercise)
+                                selectedExerciseTabContent!!.displayName = detailedExercise.effectiveTitle
                                 toolWindow!!.contentManager.setSelectedContent(selectedExerciseTabContent)
                             }
                         }
                     }
 
                     override fun networkErrorMessage() {
-                        stopTabsIfLoading(exercisesTab.project)
-                        showNetworkErrorMessage(exercisesTab.project)
+                        invokeLaterUI {
+                            stopTabsIfLoading(exercisesTab.project)
+                            showNetworkErrorMessage(exercisesTab.project)
+                        }
                     }
 
                     override fun requestFailed(message: String) {
-                        stopTabsIfLoading(exercisesTab.project)
-                        showRequestFailedMessage(message, exercisesTab.project)
+                        invokeLaterUI {
+                            stopTabsIfLoading(exercisesTab.project)
+                            showRequestFailedMessage(message, exercisesTab.project)
+                        }
                     }
 
                 })
@@ -148,7 +156,7 @@ object UiController {
     }
 
     fun requestCourses() {
-        service<LahendusApiService>().getCourses()
+        service<LahendusApiService>().getCoursesBG()
     }
 
     fun refreshExercisesTab(project: Project?) {
@@ -166,13 +174,13 @@ object UiController {
             .subscribe(LahendusProjectActionNotifier.LAHENDUS_PROJECT_ACTION_TOPIC,
                 object : LahendusProjectActionNotifier {
                     override fun latestSubmissionOrNull(submission: Submission?) {
-                        invokeLater {
+                        invokeLaterUI {
                             selectedExerciseTab.populateExerciseFeedbackContent(submission)
                         }
                     }
 
                     override fun awaitLatestSubmission(detailedExercise: DetailedExercise, submission: Submission) {
-                        invokeLater {
+                        invokeLaterUI {
                             selectedExerciseTab.populateExerciseFeedbackContent(submission)
                             resolveExerciseStatusAfterSubmission(detailedExercise, submission)?.let { status ->
                                 getExercisesTab(selectedExerciseTab.project)?.updateExerciseStatus(
@@ -185,7 +193,7 @@ object UiController {
 
                     override fun solutionSubmittedSuccessfully() {
                         toolWindowNotification("Solution submitted", selectedExerciseTab.project, MessageType.INFO)
-                        invokeLater {
+                        invokeLaterUI {
                             selectedExerciseTab.exerciseFeedbackPanel!!.requestLatestSubmissionFeedback(true)
                         }
                     }
@@ -254,10 +262,10 @@ object UiController {
             .getToolWindow("Lahendus")
     }
 
-    fun invokeLater(callback: () -> Unit) {
+    fun invokeLaterUI(callback: () -> Unit) {
         ApplicationManager.getApplication().invokeLater(
             { callback.invoke() },
-            ModalityState.any()
+            ModalityState.defaultModalityState()
         )
     }
 

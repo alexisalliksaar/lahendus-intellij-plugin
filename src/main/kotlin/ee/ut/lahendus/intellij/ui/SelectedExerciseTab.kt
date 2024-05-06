@@ -73,11 +73,13 @@ class SelectedExerciseTab(val project: Project) : SimpleToolWindowPanel(true), D
     fun populateExerciseInfoContent(detailedExercise: DetailedExercise) {
         selectedExercise = detailedExercise
         exerciseInfoPanel!!.showDetailedExerciseInfo(detailedExercise)
+        exerciseInfoPanel!!.revalidate()
         exerciseFeedbackPanel!!.requestLatestSubmissionFeedback(false)
     }
 
     fun populateExerciseFeedbackContent(submission: Submission?) {
         exerciseFeedbackPanel!!.showSubmissionFeedback(submission)
+        exerciseFeedbackPanel!!.revalidate()
     }
 
     class ExerciseInfoPanel : VerticalBox() {
@@ -97,18 +99,6 @@ class SelectedExerciseTab(val project: Project) : SimpleToolWindowPanel(true), D
             styleSheet.addRule("div { margin-top: auto; }")
 
             exerciseText = SimpleHtmlPane(additionalStyleSheet = styleSheet)
-            //exerciseText!!.contentType = "text/html"
-            //exerciseText.
-            //exerciseText!!.setCopyable(true)
-            //exerciseText!!.alignmentX = 0.0f
-            //exerciseText!!.alignmentY = 0.0f
-            //exerciseText!!.font = JBFont.regular()
-            //exerciseText!!.preferredSize = JBDimension(400, 400)
-
-
-            //val scrollPane = JBScrollPane(exerciseText!!) // Wrap the editor pane in a scroll pane
-            //scrollPane.horizontalScrollBarPolicy = JScrollPane.HORIZONTAL_SCROLLBAR_NEVER // Disable horizontal scrollbar
-            //exerciseText!!.preferredSize = JBDimension(200, exerciseText!!.preferredHeight)
 
             add(titleLabel!!)
             add(exerciseText!!)
@@ -169,11 +159,12 @@ class SelectedExerciseTab(val project: Project) : SimpleToolWindowPanel(true), D
             if (await) {
                 startLoading()
                 service<LahendusApiService>()
-                    .awaitLatestSubmission(selectedExercise, selectedExerciseTab.project)
+                    .awaitLatestSubmissionBG(selectedExercise, selectedExerciseTab.project)
             } else {
                 service<LahendusApiService>()
-                    .getLatestSubmissionOrNull(selectedExercise, selectedExerciseTab.project)
+                    .getLatestSubmissionOrNullBG(selectedExercise, selectedExerciseTab.project)
             }
+            this.revalidate()
         }
 
         private fun clearFeedbackPanelContent() {

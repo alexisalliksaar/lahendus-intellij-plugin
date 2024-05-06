@@ -128,6 +128,7 @@ class ExercisesTab(val project: Project) : SimpleToolWindowPanel(true), Disposab
                 coursesPanel!!.add(courseLink)
             }
         }
+        coursesPanel!!.revalidate()
     }
 
     private fun startLoadingExercises() {
@@ -147,9 +148,8 @@ class ExercisesTab(val project: Project) : SimpleToolWindowPanel(true), Disposab
         if (startLoading) {
             startLoadingExercises()
         }
-        UiController.invokeLater {
-            service<LahendusApiService>().getCourseExercises(selectedCourse!!.id, project)
-        }
+        service<LahendusApiService>().getCourseExercisesBG(selectedCourse!!.id, project)
+        exercisesPanel!!.revalidate()
     }
 
     private var exercisesPanelLoadingPanel: JBLoadingPanel? = null
@@ -202,7 +202,7 @@ class ExercisesTab(val project: Project) : SimpleToolWindowPanel(true), Disposab
 
                 val exerciseLink = createLink(courseExercise.effectiveTitle, onClick = {
                     service<LahendusApiService>()
-                        .getDetailedExercise(selectedCourse!!.id, courseExercise.id, project)
+                        .getDetailedExerciseBG(selectedCourse!!.id, courseExercise.id, project)
                 })
 
                 val exerciseLinkPanel = ExerciseLinkPanel(courseExercise, exerciseLink)
@@ -244,6 +244,7 @@ class ExercisesTab(val project: Project) : SimpleToolWindowPanel(true), Disposab
 
     fun showExercises(courseExercises: List<CourseExercise>?) {
         populateExercisesPanelList(courseExercises)
+        exercisesPanel!!.revalidate()
     }
 
     private fun showMessage(message: String) {

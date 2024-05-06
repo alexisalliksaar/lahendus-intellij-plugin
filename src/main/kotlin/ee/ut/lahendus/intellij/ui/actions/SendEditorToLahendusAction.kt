@@ -33,7 +33,7 @@ class SendEditorToLahendusAction: AbstractAuthenticatedAction() {
                 if (editorText != null && selectedExerciseTab.selectedExercise != null) {
                     selectedExerciseTab.exerciseFeedbackPanel?.startLoading()
                     service<LahendusApiService>()
-                        .postSolution(selectedExerciseTab.selectedExercise!!, editorText, selectedExerciseTab.project)
+                        .postSolutionBG(selectedExerciseTab.selectedExercise!!, editorText, selectedExerciseTab.project)
                 }
             }
         }

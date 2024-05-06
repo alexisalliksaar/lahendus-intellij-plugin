@@ -10,7 +10,7 @@ class RefreshSelectedExerciseAction: AbstractAuthenticatedAction() {
     override fun actionPerformed(e: AnActionEvent) {
         (e.dataContext.getData(PlatformCoreDataKeys.CONTEXT_COMPONENT) as? SelectedExerciseTab)?.let{
             if (it.selectedExercise?.id != null && it.selectedExercise?.courseId != null){
-                service<LahendusApiService>().getDetailedExercise(
+                service<LahendusApiService>().getDetailedExerciseBG(
                     it.selectedExercise!!.courseId,
                     it.selectedExercise!!.id,
                     it.project
