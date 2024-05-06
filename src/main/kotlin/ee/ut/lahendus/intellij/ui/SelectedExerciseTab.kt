@@ -116,9 +116,7 @@ class SelectedExerciseTab(val project: Project) : SimpleToolWindowPanel(true), D
 
         fun showDetailedExerciseInfo(detailedExercise: DetailedExercise) {
             titleLabel!!.text = detailedExercise.effectiveTitle
-            exerciseText!!.text = "<html><body>${detailedExercise.htmlText}</body></html" // style="margin-top: 0"
-            exerciseText!!.revalidate()
-            exerciseText!!.repaint()
+            exerciseText!!.text = "<html><body>${detailedExercise.htmlText.orEmpty()}</body></html"
         }
     }
 
