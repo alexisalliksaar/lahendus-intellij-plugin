@@ -12,3 +12,4 @@ and to submit the contents of their active editor directly from the IDE for a so
 ## Related
 * [Easy](https://github.com/kspar/easy/) is the platform on which Lahendus is based upon
 * [Intellij Platform SDK documentation](https://plugins.jetbrains.com/docs/intellij/welcome.html)
+* [Plugin Jetbrains Marketplace page](https://plugins.jetbrains.com/plugin/24036-lahendus)
