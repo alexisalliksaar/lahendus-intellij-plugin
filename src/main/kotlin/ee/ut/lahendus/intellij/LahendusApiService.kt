@@ -160,6 +160,7 @@ class LahendusApiService {
                 LOG.warn("Failed to fetch $path, connection error occurred")
                 RequestUtils.publishNetworkErrorMessage(project)
             } catch (e: Exception) {
+                LOG.warn("Failed get request against $path", e)
                 RequestUtils.publishRequestFailedMessage("Something went wrong when trying to fetch $errorMessagePostfix!", project)
             }
         }
@@ -184,8 +185,10 @@ class LahendusApiService {
             } catch (e: AuthenticationService.AuthenticationRequiredException) {
                 RequestUtils.publishAuthenticationRequired()
             } catch (e: ConnectException) {
+                LOG.warn("Failed to post to $path, connection error occurred")
                 RequestUtils.publishNetworkErrorMessage(project)
             }  catch (e: Exception) {
+                LOG.warn("Failed post request against $path", e)
                 RequestUtils.publishRequestFailedMessage("Something went wrong when trying to $errorMessagePostfix!", project)
             }
         }
