@@ -1,0 +1,67 @@
+{
+  "exercisesTab": {
+    "tabTitle": "Exercises",
+    "authReqMsg": "Authentication is required",
+    "authFailMsg": "Authenticating failed, please try again",
+    "loggedOutMsg": "Logged out successfully",
+    "coursesBorderTitle": "Courses",
+    "noCoursesFoundMsg": "You haven't been added to any courses yet",
+    "exercisesBorderTitle": "Exercises",
+    "noCourseSelectedMsg": "No course selected",
+    "noExercisesFoundMsg": "No Exercises found"
+  },
+  "selectedExerciseTab": {
+    "feedbackLabel": "Feedback",
+    "exerciseClosedMsg": "This exercise is closed and does not allow new submissions",
+    "noSolutionsMsg": "No existing submissions for this exercise",
+    "latestSubmissionLabel": "Latest submission",
+    "submissionTimePrefix": "Submission Time",
+    "pointsLabel": "Points",
+    "gradingMethodLabelPrefix": "Grading method",
+    "graderType": {
+      "auto": "Automatic",
+      "teacher": "Teacher"
+    },
+    "teacherFeedbackLabel": "Teacher feedback"
+  },
+  "common": {
+    "loadingMsg": "Loading"
+  },
+  "automaticFeedback": {
+    "inputsMessage": "Inputs provided to the program",
+    "outputsMessage": "The program's full output",
+    "exceptionMessage": "There was an exception during the program's execution",
+    "createdFilesMessage": "Before running the program, the following files were created"
+  },
+  "uiController": {
+    "reAuthNotificationMsg": "Please authenticate again",
+    "connectErrorMsg": "A connection error occurred, please check your internet connection!",
+    "solutionSubmittedMsg": "Solution submitted"
+  },
+  "authService": {
+    "authSuccessMsg": "Authentication successful",
+    "authFailMsg": "Authentication failed"
+  },
+  "apiService": {
+    "errStatusCodeStart": "Received status code",
+    "getErrStatusCodeMiddle": "from Lahendus when trying to fetch",
+    "postErrStatusCodeMiddle": "from Lahendus when trying to",
+    "getGeneralExceptionMessage": "Something went wrong when trying to fetch",
+    "postGeneralExceptionMessage": "Something went wrong when trying to",
+    "detExErrPostfix": "exercise information",
+    "courseExErrPostfix": "course exercises",
+    "courseErrPostfix": "courses",
+    "subsErrPostfix": "exercise submission",
+    "subErrPostfix": "exercise submission",
+    "solErrPostfix": "submit solution"
+  },
+  "actions": {
+    "backToExercises": "Back",
+    "login": "Log In",
+    "logout": "Log Out",
+    "openInBrowser": "Open Exercise in Browser",
+    "refresh": "Refresh",
+    "sendEditorToLahendus": "Submit Active Editor Content to Lahendus",
+    "languageSelection": "Languages"
+  }
+}

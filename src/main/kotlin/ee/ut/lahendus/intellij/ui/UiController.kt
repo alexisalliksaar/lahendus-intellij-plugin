@@ -18,6 +18,7 @@ import ee.ut.lahendus.intellij.data.DetailedExercise
 import ee.ut.lahendus.intellij.data.ExerciseStatus
 import ee.ut.lahendus.intellij.data.GraderType
 import ee.ut.lahendus.intellij.data.Submission
+import ee.ut.lahendus.intellij.ui.language.LanguageProvider
 import java.time.ZoneId
 import java.time.ZonedDateTime
 import java.time.format.DateTimeFormatter
@@ -52,7 +53,7 @@ object UiController {
                         userAuthenticated = false
                         invokeLaterUI {
                             toolWindowNotification(
-                                "Please authenticate again",
+                                LanguageProvider.languageModel!!.uiController.reAuthNotificationMsg,
                                 exercisesTab.project, MessageType.WARNING
                             )
                             exercisesTab.showReAuthenticateMessage()
@@ -144,7 +145,7 @@ object UiController {
 
     fun showNetworkErrorMessage(project: Project) {
         toolWindowNotification(
-            "A connection error occurred, please check your internet connection!",
+            LanguageProvider.languageModel!!.uiController.connectErrorMsg,
             project, MessageType.ERROR
         )
     }
@@ -192,7 +193,7 @@ object UiController {
                     }
 
                     override fun solutionSubmittedSuccessfully() {
-                        toolWindowNotification("Solution submitted", selectedExerciseTab.project, MessageType.INFO)
+                        toolWindowNotification(LanguageProvider.languageModel!!.uiController.solutionSubmittedMsg, selectedExerciseTab.project, MessageType.INFO)
                         invokeLaterUI {
                             selectedExerciseTab.exerciseFeedbackPanel!!.requestLatestSubmissionFeedback(true)
                         }

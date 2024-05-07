@@ -22,6 +22,7 @@ import ee.ut.lahendus.intellij.data.Course
 import ee.ut.lahendus.intellij.data.CourseExercise
 import ee.ut.lahendus.intellij.data.DetailedExercise
 import ee.ut.lahendus.intellij.data.ExerciseStatus
+import ee.ut.lahendus.intellij.ui.language.LanguageProvider
 import java.awt.BorderLayout
 import java.awt.Cursor
 import java.awt.FlowLayout
@@ -65,11 +66,11 @@ class ExercisesTab(val project: Project) : SimpleToolWindowPanel(true), Disposab
 
     override fun dispose() {}
     fun showAuthenticationFailedMessage() {
-        showMessage("Authenticating failed, please try again")
+        showMessage(LanguageProvider.languageModel!!.exercisesTab.authFailMsg)
     }
 
     private fun showAuthenticationMessage() {
-        showMessage("Authentication is required")
+        showMessage(LanguageProvider.languageModel!!.exercisesTab.authReqMsg)
     }
 
     fun showReAuthenticateMessage() {
@@ -79,7 +80,7 @@ class ExercisesTab(val project: Project) : SimpleToolWindowPanel(true), Disposab
     fun showLoggedOutMessage() {
         selectedCourse = null
         exercisesPanelListPanel?.removeAll()
-        showMessage("Logged out successfully")
+        showMessage(LanguageProvider.languageModel!!.exercisesTab.loggedOutMsg)
     }
 
     private fun createContentPanel(): JComponent {
@@ -101,7 +102,7 @@ class ExercisesTab(val project: Project) : SimpleToolWindowPanel(true), Disposab
 
         panel.border = JBUI.Borders.compound(
             JBUI.Borders.emptyBottom(5),
-            BorderFactory.createTitledBorder("Courses"),
+            BorderFactory.createTitledBorder(LanguageProvider.languageModel!!.exercisesTab.coursesBorderTitle),
             JBUI.Borders.empty(10)
         )
         return panel
@@ -112,7 +113,7 @@ class ExercisesTab(val project: Project) : SimpleToolWindowPanel(true), Disposab
 
         courses?.let {
             if (courses.isEmpty()) {
-                coursesPanel!!.add(JBLabel("You haven't been added to any courses yet"))
+                coursesPanel!!.add(JBLabel(LanguageProvider.languageModel!!.exercisesTab.noCoursesFoundMsg))
             }
 
             courses.forEach { course ->
@@ -159,7 +160,7 @@ class ExercisesTab(val project: Project) : SimpleToolWindowPanel(true), Disposab
         val panel = VerticalBox()
         panel.border = JBUI.Borders.compound(
             JBUI.Borders.emptyTop(5),
-            BorderFactory.createTitledBorder("Exercises"),
+            BorderFactory.createTitledBorder(LanguageProvider.languageModel!!.exercisesTab.exercisesBorderTitle),
             JBUI.Borders.empty(10)
         )
         exercisesPanelTitleLabel = JBLabel()
@@ -172,7 +173,7 @@ class ExercisesTab(val project: Project) : SimpleToolWindowPanel(true), Disposab
         exercisesPanelListPanel!!.border = JBUI.Borders.emptyTop(5)
 
         exercisesPanelLoadingPanel = JBLoadingPanel(BorderLayout(), this)
-        exercisesPanelLoadingPanel!!.setLoadingText("Loading")
+        exercisesPanelLoadingPanel!!.setLoadingText(LanguageProvider.languageModel!!.common.loadingMsg)
         exercisesPanelLoadingPanel!!.add(exercisesPanelListPanel!!)
         panel.add(exercisesPanelLoadingPanel)
 
@@ -183,7 +184,7 @@ class ExercisesTab(val project: Project) : SimpleToolWindowPanel(true), Disposab
 
     private fun populateExercisesPanel() {
         if (selectedCourse == null) {
-            exercisesPanelTitleLabel!!.text = "No course selected"
+            exercisesPanelTitleLabel!!.text = LanguageProvider.languageModel!!.exercisesTab.noCourseSelectedMsg
         } else {
             exercisesPanelTitleLabel!!.text = selectedCourse!!.alias ?: selectedCourse!!.title
             exercisesPanelTitleLabel!!.font = JBFont.h3()
@@ -195,7 +196,7 @@ class ExercisesTab(val project: Project) : SimpleToolWindowPanel(true), Disposab
         exercisesPanelListPanel!!.removeAll()
         courseExercises?.let {
             courseExercises.ifEmpty {
-                exercisesPanelListPanel!!.add(JBLabel("No Exercises found"))
+                exercisesPanelListPanel!!.add(JBLabel(LanguageProvider.languageModel!!.exercisesTab.noExercisesFoundMsg))
             }
 
             courseExercises.forEach { courseExercise ->

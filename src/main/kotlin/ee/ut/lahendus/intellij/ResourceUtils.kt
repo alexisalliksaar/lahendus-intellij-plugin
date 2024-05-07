@@ -2,6 +2,7 @@ package ee.ut.lahendus.intellij
 
 import com.intellij.openapi.application.ApplicationManager
 import com.intellij.openapi.diagnostic.logger
+import java.io.InputStream
 
 private val LOG = logger<ResourceUtils>()
 
@@ -10,6 +11,10 @@ object ResourceUtils {
 
     private fun getResource(path: String): String? {
         return ResourceUtils::class.java.getResource(path)?.readText()
+    }
+
+    fun getResourceStream(path: String): InputStream? {
+        return ResourceUtils::class.java.getResourceAsStream(path)
     }
 
     private val injectionTemplate = Regex("\\{\\{\\s*(?<id>.*?)\\s*}}")

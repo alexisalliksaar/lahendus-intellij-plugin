@@ -1,7 +1,9 @@
 package ee.ut.lahendus.intellij.data
 
 import com.google.gson.annotations.SerializedName
+import ee.ut.lahendus.intellij.ui.language.LanguageProvider
 
+@Suppress("RedundantExplicitType", "SimplifiableCallChain")
 class AutoFeedback(
     @SerializedName("result_type") val resultType: AutoFeedbackResultType?,
     @SerializedName("pre_evaluate_error") val preEvaluateError: String?,
@@ -33,10 +35,6 @@ class AutoFeedback(
     companion object Formatter {
         private const val TAB = "   * "
         private const val HALF_TAB = "  "
-        private const val INPUTS_MESSAGE = "Inputs provided to the program"
-        private const val OUTPUTS_MESSAGE = "The program's full output"
-        private const val EXCEPTION_MESSAGE = "There was an exception during the program's execution"
-        private const val CREATED_FILES_MESSAGE = "Before running the program, the following files were created"
 
         private fun formatCheck(check: AutoFeedbackTestCheck): String {
             return "${check.status}: ${check.feedback}"
@@ -65,7 +63,9 @@ class AutoFeedback(
             test.userInputs?.let {
                 if (test.userInputs.isNotEmpty()) {
                     userInputsFormatted = test.userInputs.joinToString(separator = "\n$TAB")
-                    userInputsFormatted = "${HALF_TAB}${INPUTS_MESSAGE}:\n${TAB}${userInputsFormatted}\n"
+                    userInputsFormatted = HALF_TAB +
+                            LanguageProvider.languageModel!!.automaticFeedback.inputsMessage +
+                            ":\n${TAB}${userInputsFormatted}\n"
                 }
             }
 
@@ -74,22 +74,27 @@ class AutoFeedback(
                 if (test.actualOutput.isNotEmpty()) {
                     actualOutputFormatted = test.actualOutput.split("\n")
                         .joinToString(separator = "\n$TAB")
-                    actualOutputFormatted = "${HALF_TAB}${OUTPUTS_MESSAGE}:\n${TAB}${actualOutputFormatted}"
+                    actualOutputFormatted = HALF_TAB +
+                            LanguageProvider.languageModel!!.automaticFeedback.outputsMessage +
+                            ":\n${TAB}${actualOutputFormatted}"
                 }
             }
 
             var exceptionMessageFormatted: String = ""
             test.exceptionMessage?.let {
                 exceptionMessageFormatted = "${TAB}${test.exceptionMessage.replace("\n", "\n${TAB}")}"
-                exceptionMessageFormatted = "${HALF_TAB}${EXCEPTION_MESSAGE}:\n\n${exceptionMessageFormatted}\n"
+                exceptionMessageFormatted = HALF_TAB +
+                        LanguageProvider.languageModel!!.automaticFeedback.exceptionMessage +
+                        ":\n\n${exceptionMessageFormatted}\n"
             }
 
             var createdFilesMessageFormatted: String = ""
             test.createdFiles?.let {
                 if (test.createdFiles.isNotEmpty()) {
                     createdFilesMessageFormatted = formatCreatedFiles(test.createdFiles)
-                    createdFilesMessageFormatted = "${HALF_TAB}${CREATED_FILES_MESSAGE}:" +
-                            "\n\n${createdFilesMessageFormatted}\n\n"
+                    createdFilesMessageFormatted = HALF_TAB +
+                            LanguageProvider.languageModel!!.automaticFeedback.createdFilesMessage +
+                            ":\n\n${createdFilesMessageFormatted}\n\n"
                 }
             }
 

@@ -1,0 +1,67 @@
+{
+  "exercisesTab": {
+    "tabTitle": "Ülesanded",
+    "authReqMsg": "Palun logige sisse",
+    "authFailMsg": "Sisse logimine ebaõnnestus, palun proovige uuesti",
+    "loggedOutMsg": "Välja logimine õnnestus",
+    "coursesBorderTitle": "Kursused",
+    "noCoursesFoundMsg": "Teid ei ole ühelegi kursusele lisatud",
+    "exercisesBorderTitle": "Ülesanded",
+    "noCourseSelectedMsg": "Ühtegi kursust pole valitud",
+    "noExercisesFoundMsg": "Sellel kursusel ei leitud ühtegi ülesannet"
+  },
+  "selectedExerciseTab": {
+    "feedbackLabel": "Tagasiside",
+    "exerciseClosedMsg": "See ülesanne on suletud ja ei luba uusi lahendusi esitada",
+    "noSolutionsMsg": "Selle ülesande jaoks ei ole varem lahendusi esitatud",
+    "latestSubmissionLabel": "Viimase lahenduse esitus",
+    "submissionTimePrefix": "Esituse aeg",
+    "pointsLabel": "Punktid",
+    "gradingMethodLabelPrefix": "Hindamismeetod",
+    "graderType": {
+      "auto": "Automaatne",
+      "teacher": "Õpetaja"
+    },
+    "teacherFeedbackLabel": "Õpetaja tagasiside"
+  },
+  "common": {
+    "loadingMsg": "Laadimine"
+  },
+  "automaticFeedback": {
+    "inputsMessage": "Andsin programmile sisendid",
+    "outputsMessage": "Programmi täielik väljund oli",
+    "exceptionMessage": "Programmi käivitamisel tekkis viga",
+    "createdFilesMessage": "Enne programmi käivitamist lõin failid"
+  },
+  "uiController": {
+    "reAuthNotificationMsg": "Palun logige uuesti sisse",
+    "connectErrorMsg": "Esines internetiühenduse probleem, palun kontrollige oma internetiühendust!",
+    "solutionSubmittedMsg": "Lahendus esitatud"
+  },
+  "authService": {
+    "authSuccessMsg": "Sisse logimine õnnestus",
+    "authFailMsg": "Sisse logimine ebaõnnestus"
+  },
+  "apiService": {
+    "errStatusCodeStart": "Sain veakoodi",
+    "getErrStatusCodeMiddle": "Lahenduselt, kui püüdsin hankida",
+    "postErrStatusCodeMiddle": "Lahenduselt, kui püüdsin",
+    "getGeneralExceptionMessage": "Midagi läks valesti, kui püüdsin hankida",
+    "postGeneralExceptionMessage": "Midagi läks valesti, kui püüdsin",
+    "detExErrPostfix": "ülesande infot",
+    "courseExErrPostfix": "kursuse ülesandeid",
+    "courseErrPostfix": "kursuseid",
+    "subsErrPostfix": "ülesande lahendust",
+    "subErrPostfix": "ülesande lahendust",
+    "solErrPostfix": "esitada ülesande lahendust"
+  },
+  "actions": {
+    "backToExercises": "Tagasi",
+    "login": "Logi Sisse",
+    "logout": "Logi Välja",
+    "openInBrowser": "Ava Ülesanne Brauseris",
+    "refresh": "Värskenda",
+    "sendEditorToLahendus": "Esita Aktiivse Redaktori Sisu Lahendusse",
+    "languageSelection": "Keeled"
+  }
+}

@@ -1,5 +1,5 @@
 <!-- Plugin Configuration File. Read more: https://plugins.jetbrains.com/docs/intellij/plugin-configuration-file.html -->
-<idea-plugin>
+<idea-plugin require-restart="true">
     <!-- Unique identifier of the plugin. It should be FQN. It cannot be changed between the plugin versions. -->
     <id>ee.ut.lahendus.intellij</id>
 
@@ -67,11 +67,30 @@
                 icon="/icons/openInBrowser.svg">
         </action>
 
+        <action id="ee.ut.lahendus.intellij.ui.language.actions.EnglishLanguageAction"
+                class="ee.ut.lahendus.intellij.ui.language.actions.EnglishLanguageAction"
+                text="English">
+        </action>
+        <action id="ee.ut.lahendus.intellij.ui.language.actions.EstonianLanguageAction"
+                class="ee.ut.lahendus.intellij.ui.language.actions.EstonianLanguageAction"
+                text="Eesti">
+        </action>
+        <group id="ee.ut.lahendus.intellij.ui.language.actions.LanguageActions"
+               popup="true"
+               text="Languages"
+               icon="/icons/localization.svg"
+        >
+            <reference ref="ee.ut.lahendus.intellij.ui.language.actions.EnglishLanguageAction"/>
+            <reference ref="ee.ut.lahendus.intellij.ui.language.actions.EstonianLanguageAction"/>
+        </group>
+
         <group id="ee.ut.lahendus.intellij.ui.actions.ExercisesActions">
             <reference ref="ee.ut.lahendus.intellij.ui.actions.LoginAction"/>
             <reference ref="ee.ut.lahendus.intellij.ui.actions.LogoutAction"/>
             <separator/>
             <reference ref="ee.ut.lahendus.intellij.ui.actions.RefreshExercisesAction"/>
+            <separator/>
+            <reference ref="ee.ut.lahendus.intellij.ui.language.actions.LanguageActions"/>
         </group>
 
         <group id="ee.ut.lahendus.intellij.ui.actions.SelectedExerciseActions">
@@ -80,9 +99,15 @@
             <separator/>
             <reference ref="ee.ut.lahendus.intellij.ui.actions.SendEditorToLahendusAction"/>
             <reference ref="ee.ut.lahendus.intellij.ui.actions.OpenInBrowserAction"/>
+            <separator/>
+            <reference ref="ee.ut.lahendus.intellij.ui.language.actions.LanguageActions"/>
         </group>
 
     </actions>
+    
+    <applicationListeners>
+        <listener class="ee.ut.lahendus.intellij.ui.language.LanguageStartupListener" topic="com.intellij.ide.AppLifecycleListener"/>
+    </applicationListeners>
 
     <extensions defaultExtensionNs="com.intellij">
         <toolWindow factoryClass="ee.ut.lahendus.intellij.ui.LahendusWindowFactory"

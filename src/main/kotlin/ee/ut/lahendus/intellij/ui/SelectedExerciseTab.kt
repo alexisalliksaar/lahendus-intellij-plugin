@@ -20,6 +20,7 @@ import ee.ut.lahendus.intellij.data.AutoFeedback
 import ee.ut.lahendus.intellij.data.AutoFeedback.Formatter.formatAutoFeedback
 import ee.ut.lahendus.intellij.data.DetailedExercise
 import ee.ut.lahendus.intellij.data.Submission
+import ee.ut.lahendus.intellij.ui.language.LanguageProvider
 import java.awt.BorderLayout
 import javax.swing.JComponent
 import javax.swing.JEditorPane
@@ -137,7 +138,7 @@ class SelectedExerciseTab(val project: Project) : SimpleToolWindowPanel(true), D
                 JBUI.Borders.emptyTop(10)
             )
 
-            val panelTitleLabel = JBLabel("Feedback")
+            val panelTitleLabel = JBLabel(LanguageProvider.languageModel!!.selectedExerciseTab.feedbackLabel)
             panelTitleLabel.font = JBFont.h3()
             panelTitleLabel.border = JBUI.Borders.emptyBottom(5)
             panel.add(panelTitleLabel)
@@ -145,7 +146,7 @@ class SelectedExerciseTab(val project: Project) : SimpleToolWindowPanel(true), D
             feedbackPanelContent = VerticalBox()
 
             feedbackLoadingPanel = JBLoadingPanel(BorderLayout(), selectedExerciseTab)
-            feedbackLoadingPanel!!.setLoadingText("Loading")
+            feedbackLoadingPanel!!.setLoadingText(LanguageProvider.languageModel!!.common.loadingMsg)
             feedbackLoadingPanel!!.add(feedbackPanelContent!!)
             panel.add(feedbackLoadingPanel)
 
@@ -191,14 +192,14 @@ class SelectedExerciseTab(val project: Project) : SimpleToolWindowPanel(true), D
 
             val selectedExercise = selectedExerciseTab.selectedExercise!!
             if (!selectedExercise.isOpen) {
-                val closedLabel = JBLabel("This exercise is closed and does not allow new submissions")
+                val closedLabel = JBLabel(LanguageProvider.languageModel!!.selectedExerciseTab.exerciseClosedMsg)
                 closedLabel.font = JBFont.h4()
                 closedLabel.border = JBUI.Borders.emptyBottom(5)
                 feedbackPanelContent!!.add(closedLabel)
             }
 
             if (submission == null) {
-                feedbackPanelContent!!.add(JBLabel("No existing submissions for this exercise"))
+                feedbackPanelContent!!.add(JBLabel(LanguageProvider.languageModel!!.selectedExerciseTab.noSolutionsMsg))
                 return
             }
 
@@ -211,34 +212,40 @@ class SelectedExerciseTab(val project: Project) : SimpleToolWindowPanel(true), D
 
             val panel = panel {
                 row {
-                    val latestSubmissionLabel = label("Latest submission")
+                    val latestSubmissionLabel = label(LanguageProvider.languageModel!!.selectedExerciseTab.latestSubmissionLabel)
                     latestSubmissionLabel.component.font = JBFont.h4()
                 }
                 if (submission.submissionTime != null) {
                     row {
-                        label("Submission Time: ${UiController.formattedDate(submission.submissionTime)}")
+                        label("${LanguageProvider.languageModel!!.selectedExerciseTab.submissionTimePrefix}: " +
+                                UiController.formattedDate(submission.submissionTime)
+                        )
                     }
                 }
                 row {
                     cell(submittedText).align(AlignX.FILL)
                 }
 
+                @Suppress("VARIABLE_WITH_REDUNDANT_INITIALIZER")
                 var formattedAutoFeedback: AutoFeedback.Formatter.FormattedAutoFeedback? = null
 
                 if (submission.gradeTeacher != null) {
+
+                    @Suppress("DuplicatedCode")
                     row {
-                        val pointsLabel = label("Points")
+                        val pointsLabel = label(LanguageProvider.languageModel!!.selectedExerciseTab.pointsLabel)
                         pointsLabel.component.font = JBFont.h4()
                     }
                     row {
                         label("${submission.gradeTeacher}/${selectedExercise.threshold ?: "100"}")
                     }
                     row {
-                        label("Grading method: ${selectedExercise.graderType}")
+                        label("${LanguageProvider.languageModel!!.selectedExerciseTab.gradingMethodLabelPrefix}: " +
+                                LanguageProvider.getGraderTypeLiteral(selectedExercise.graderType))
                     }
                     if (submission.feedbackTeacher != null) {
                         row {
-                            val teacherFeedbackLabel = label("Teacher feedback")
+                            val teacherFeedbackLabel = label(LanguageProvider.languageModel!!.selectedExerciseTab.teacherFeedbackLabel)
                             teacherFeedbackLabel.component.font = JBFont.h4()
                         }
                         row {
@@ -253,14 +260,15 @@ class SelectedExerciseTab(val project: Project) : SimpleToolWindowPanel(true), D
                 } else {
                     formattedAutoFeedback = submission.formatAutoFeedback()
                     row {
-                        val pointsLabel = label("Points")
+                        val pointsLabel = label(LanguageProvider.languageModel!!.selectedExerciseTab.pointsLabel)
                         pointsLabel.component.font = JBFont.h4()
                     }
                     row {
                         label("${formattedAutoFeedback.autoGrade}/${selectedExercise.threshold ?: "100"}")
                     }
                     row {
-                        label("Grading method: ${selectedExercise.graderType}")
+                        label("${LanguageProvider.languageModel!!.selectedExerciseTab.gradingMethodLabelPrefix}: " +
+                                LanguageProvider.getGraderTypeLiteral(selectedExercise.graderType))
                     }
                     if (submission.feedbackAutoStr != null) {
                         val autoFeedbackText = JEditorPane()

@@ -10,6 +10,7 @@ import com.intellij.openapi.diagnostic.logger
 import com.sun.net.httpserver.HttpExchange
 import com.sun.net.httpserver.HttpHandler
 import com.sun.net.httpserver.HttpServer
+import ee.ut.lahendus.intellij.ui.language.LanguageProvider
 import java.io.IOException
 import java.io.InputStream
 import java.net.ConnectException
@@ -61,6 +62,7 @@ class AuthenticationService : Disposable {
         LOG.info("Authentication server stopped")
     }
 
+    @Suppress("HttpUrlsUsage")
     private fun getLoginAddress(): String? {
         if (port == null) return null
         return "http://${LOCALHOST}:${port}/login"
@@ -180,17 +182,16 @@ class AuthenticationService : Disposable {
 
     internal class LoginHandler : HttpHandler {
 
-        private val loginInjectedProperties = mapOf(
-            "idp_url" to AuthenticationProperties.IDP_URL,
-            "success_msg" to AuthenticationProperties.SUCCESS_MESSAGE,
-            "fail_msg" to AuthenticationProperties.FAIL_MESSAGE
-        )
-
         override fun handle(req: HttpExchange) {
             LOG.info("Received login request")
             if (req.requestMethod.uppercase() != "GET") {
                 return
             }
+            val loginInjectedProperties = mapOf(
+                "idp_url" to AuthenticationProperties.IDP_URL,
+                "success_msg" to LanguageProvider.languageModel!!.authService.authSuccessMsg,
+                "fail_msg" to LanguageProvider.languageModel!!.authService.authFailMsg
+            )
             val injectedProperties = loginInjectedProperties.toMutableMap()
             injectedProperties["port"] = service<AuthenticationService>().port.toString()
 
@@ -256,8 +257,6 @@ class AuthenticationService : Disposable {
     companion object AuthenticationProperties {
         val IDP_URL = RequestUtils.normaliseAddress("idp.lahendus.ut.ee")
         const val IDP_CLIENT_NAME = "lahendus.ut.ee"
-        const val SUCCESS_MESSAGE = "Authentication successful"
-        const val FAIL_MESSAGE = "Authentication failed"
         const val LOCALHOST = "127.0.0.1"
         const val AUTH_TOKEN_MIN_VALID_SEC = 20
         const val REFRESH_TOKEN_API_PATH = "/auth/realms/master/protocol/openid-connect/token"

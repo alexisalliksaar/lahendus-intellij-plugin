@@ -10,6 +10,7 @@ import ee.ut.lahendus.intellij.data.CoursesDTO
 import ee.ut.lahendus.intellij.data.DetailedExercise
 import ee.ut.lahendus.intellij.data.ExercisesDTO
 import ee.ut.lahendus.intellij.data.Submission
+import ee.ut.lahendus.intellij.ui.language.LanguageProvider
 import java.io.InputStream
 import java.net.ConnectException
 import java.net.http.HttpResponse
@@ -51,7 +52,7 @@ class LahendusApiService {
     }
 
     private fun getDetailedExercise(courseId: Int, exerciseId: Int, project: Project) {
-        val errorMessagePostfix = "exercise information"
+        val errorMessagePostfix = LanguageProvider.languageModel!!.apiService.detExErrPostfix
         apiGetRequest(
             DETAILED_EXERCISE_API_PATH.format(courseId, exerciseId),
             errorMessagePostfix,
@@ -67,7 +68,7 @@ class LahendusApiService {
     }
 
     private fun getCourseExercises(courseId: Int, project: Project) {
-        val errorMessagePostfix = "course exercises"
+        val errorMessagePostfix = LanguageProvider.languageModel!!.apiService.courseExErrPostfix
         apiGetRequest(
             COURSE_EXERCISES_API_PATH.format(courseId),
             errorMessagePostfix,
@@ -81,7 +82,7 @@ class LahendusApiService {
     }
 
     private fun getCourses() {
-        val errorMessagePostfix = "courses"
+        val errorMessagePostfix = LanguageProvider.languageModel!!.apiService.courseErrPostfix
         apiGetRequest(
             COURSES_API_PATH,
             errorMessagePostfix
@@ -103,8 +104,9 @@ class LahendusApiService {
 
     }
 
+    @Suppress("SameParameterValue")
     private fun getAllSubmissions(detailedExercise: DetailedExercise, limit: Int = -1, project: Project): List<Submission> {
-        val errorMessagePostfix = "exercise submissions"
+        val errorMessagePostfix = LanguageProvider.languageModel!!.apiService.subsErrPostfix
 
         var addr = ALL_EXERCISE_SUBMISSIONS_PATH
         if (limit > 0) {
@@ -134,7 +136,7 @@ class LahendusApiService {
     }
 
     private fun awaitLatestSubmission(detailedExercise: DetailedExercise, project: Project) {
-        val errorMessagePostfix = "exercise submission"
+        val errorMessagePostfix = LanguageProvider.languageModel!!.apiService.subErrPostfix
 
         apiGetRequest(
             AWAIT_LATEST_EXERCISE_SUBMISSION_API_PATH.format(detailedExercise.courseId, detailedExercise.id, project),
@@ -150,7 +152,7 @@ class LahendusApiService {
     }
 
     private fun postSolution(detailedExercise: DetailedExercise, solution: String, project: Project) {
-        val errorMessagePostfix = "submit solution"
+        val errorMessagePostfix = LanguageProvider.languageModel!!.apiService.solErrPostfix
 
         val requestBody = RequestUtils.asJson(
             mapOf(
@@ -189,7 +191,12 @@ class LahendusApiService {
                 } else if (response.statusCode() == 401) {
                     RequestUtils.publishAuthenticationRequired()
                 } else {
-                    RequestUtils.publishRequestFailedMessage("Received status code '${response.statusCode()}' from Lahendus when trying to fetch $errorMessagePostfix!", project)
+                    RequestUtils.publishRequestFailedMessage(
+                        LanguageProvider.languageModel!!.apiService.errStatusCodeStart +
+                                " '${response.statusCode()}' " +
+                                LanguageProvider.languageModel!!.apiService.getErrStatusCodeMiddle
+                                + " $errorMessagePostfix!", project
+                    )
                 }
             } catch (e: AuthenticationService.AuthenticationRequiredException) {
                 RequestUtils.publishAuthenticationRequired()
@@ -198,7 +205,10 @@ class LahendusApiService {
                 RequestUtils.publishNetworkErrorMessage(project)
             } catch (e: Exception) {
                 LOG.warn("Failed get request against $path", e)
-                RequestUtils.publishRequestFailedMessage("Something went wrong when trying to fetch $errorMessagePostfix!", project)
+                RequestUtils.publishRequestFailedMessage(
+                    LanguageProvider.languageModel!!.apiService.getGeneralExceptionMessage +
+                            " $errorMessagePostfix!", project
+                )
             }
         }
 
@@ -217,7 +227,11 @@ class LahendusApiService {
                 } else if (response.statusCode() == 401) {
                     RequestUtils.publishAuthenticationRequired()
                 } else {
-                    RequestUtils.publishRequestFailedMessage("Received status code '${response.statusCode()}' from Lahendus when trying to $errorMessagePostfix!", project)
+                    RequestUtils.publishRequestFailedMessage(LanguageProvider.languageModel!!.apiService.errStatusCodeStart +
+                            " '${response.statusCode()}' " +
+                            LanguageProvider.languageModel!!.apiService.postErrStatusCodeMiddle +
+                            " $errorMessagePostfix!", project
+                    )
                 }
             } catch (e: AuthenticationService.AuthenticationRequiredException) {
                 RequestUtils.publishAuthenticationRequired()
@@ -226,7 +240,10 @@ class LahendusApiService {
                 RequestUtils.publishNetworkErrorMessage(project)
             }  catch (e: Exception) {
                 LOG.warn("Failed post request against $path", e)
-                RequestUtils.publishRequestFailedMessage("Something went wrong when trying to $errorMessagePostfix!", project)
+                RequestUtils.publishRequestFailedMessage(
+                    LanguageProvider.languageModel!!.apiService.postGeneralExceptionMessage +
+                            " $errorMessagePostfix!", project
+                )
             }
         }
     }

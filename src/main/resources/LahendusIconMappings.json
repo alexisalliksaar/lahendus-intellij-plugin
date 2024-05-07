@@ -2,7 +2,8 @@
   "icons": {
     "expui": {
       "common": {
-        "refresh.svg": "icons/refresh.svg"
+        "refresh.svg": "icons/refresh.svg",
+        "localization.svg": "icons/localization.svg"
       },
       "exercisesTab": {
         "completed.svg": "icons/completed.svg",

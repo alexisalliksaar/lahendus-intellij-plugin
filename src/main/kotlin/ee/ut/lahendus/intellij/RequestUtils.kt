@@ -82,6 +82,7 @@ object RequestUtils {
         return objectMapper.writeValueAsString(map)
     }
 
+    @Suppress("RemoveRedundantQualifierName")
     inline fun <reified T : Any> fromJson(json: InputStream, failSilently: Boolean = false): T {
         val jsonString = json.bufferedReader(Charsets.UTF_8).use { it.readText() }
         return RequestUtils.fromJson(jsonString, failSilently)
