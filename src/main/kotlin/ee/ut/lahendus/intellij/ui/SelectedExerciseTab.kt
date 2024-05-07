@@ -262,7 +262,7 @@ class SelectedExerciseTab(val project: Project) : SimpleToolWindowPanel(true), D
                     row {
                         label("Grading method: ${selectedExercise.graderType}")
                     }
-                    if (formattedAutoFeedback.autoFeedback != null) {
+                    if (submission.feedbackAutoStr != null) {
                         val autoFeedbackText = JEditorPane()
                         autoFeedbackText.isEditable = false
                         autoFeedbackText.contentType = "text/plain"

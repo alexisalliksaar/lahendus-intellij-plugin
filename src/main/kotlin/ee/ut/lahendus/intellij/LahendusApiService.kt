@@ -1,5 +1,6 @@
 package ee.ut.lahendus.intellij
 
+import com.google.gson.JsonSyntaxException
 import com.intellij.openapi.application.ApplicationManager
 import com.intellij.openapi.components.Service
 import com.intellij.openapi.diagnostic.logger
@@ -96,10 +97,6 @@ class LahendusApiService {
         val allSubmissions = getAllSubmissions(detailedExercise, 1, project)
         val submission = allSubmissions.firstOrNull()
 
-        submission?.feedbackAutoStr?.let {
-            submission.autoFeedback = RequestUtils.fromJson(submission.feedbackAutoStr)
-        }
-
         project.messageBus
             .syncPublisher(LahendusProjectActionNotifier.LAHENDUS_PROJECT_ACTION_TOPIC)
             .latestSubmissionOrNull(submission)
@@ -121,8 +118,19 @@ class LahendusApiService {
         ) {
             val allSubmissions = RequestUtils.fromJson<AllSubmissionsDTO>(it.body())
             allSubmissions.submissions?.let { result = allSubmissions.submissions }
+            result.forEach{
+                submission: Submission -> submission.resolveAutoFeedback()
+            }
         }
         return result
+    }
+
+    private fun Submission.resolveAutoFeedback() {
+        try {
+            feedbackAutoStr?.let {
+                autoFeedback = RequestUtils.fromJson(feedbackAutoStr, true)
+            }
+        } catch (ignored: JsonSyntaxException){}
     }
 
     private fun awaitLatestSubmission(detailedExercise: DetailedExercise, project: Project) {
@@ -133,9 +141,7 @@ class LahendusApiService {
             errorMessagePostfix
         ) {
             val submission = RequestUtils.fromJson<Submission>(it.body())
-            submission.feedbackAutoStr?.let {
-                submission.autoFeedback = RequestUtils.fromJson(submission.feedbackAutoStr)
-            }
+            submission.resolveAutoFeedback()
 
             project.messageBus
                 .syncPublisher(LahendusProjectActionNotifier.LAHENDUS_PROJECT_ACTION_TOPIC)

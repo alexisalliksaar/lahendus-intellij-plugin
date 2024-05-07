@@ -2,14 +2,13 @@ package ee.ut.lahendus.intellij
 
 import com.fasterxml.jackson.databind.ObjectMapper
 import com.google.gson.Gson
-import com.google.gson.stream.JsonReader
+import com.google.gson.JsonSyntaxException
 import com.intellij.openapi.application.ApplicationManager
 import com.intellij.openapi.components.service
 import com.intellij.openapi.diagnostic.logger
 import com.intellij.openapi.project.Project
 import com.sun.net.httpserver.HttpExchange
 import java.io.InputStream
-import java.io.InputStreamReader
 import java.net.URI
 import java.net.URLEncoder
 import java.net.http.HttpClient
@@ -17,10 +16,9 @@ import java.net.http.HttpRequest
 import java.net.http.HttpResponse
 import java.time.Instant
 
-private val LOG = logger<RequestUtils>()
-
-
 object RequestUtils {
+    val LOG = logger<RequestUtils>()
+
     private val httpClient: HttpClient = HttpClient.newBuilder().build()
     private val objectMapper: ObjectMapper = ObjectMapper()
     val gson = Gson()
@@ -84,11 +82,20 @@ object RequestUtils {
         return objectMapper.writeValueAsString(map)
     }
 
-    inline fun <reified T : Any> fromJson(json: InputStream): T =
-        gson.fromJson(JsonReader(InputStreamReader(json, Charsets.UTF_8)), T::class.java)
-
-    inline fun <reified T : Any> fromJson(json: String): T =
-        gson.fromJson(json, T::class.java)
+    inline fun <reified T : Any> fromJson(json: InputStream, failSilently: Boolean = false): T {
+        val jsonString = json.bufferedReader(Charsets.UTF_8).use { it.readText() }
+        return RequestUtils.fromJson(jsonString, failSilently)
+    }
+    inline fun <reified T : Any> fromJson(json: String, failSilently: Boolean = false): T {
+        try {
+            return gson.fromJson(json, T::class.java)
+        } catch (e: JsonSyntaxException) {
+            if (! failSilently){
+                LOG.warn("Couldn't parse string to ${T::class.simpleName}. Json:\n$json")
+            }
+            throw e
+        }
+    }
 
     fun toUrlEncodedString(map: Map<String, String>): String = map.entries
         .joinToString("&") { (key, value) ->
