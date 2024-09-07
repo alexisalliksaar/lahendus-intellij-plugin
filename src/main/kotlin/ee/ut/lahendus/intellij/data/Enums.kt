@@ -28,6 +28,12 @@ enum class GraderType {
     }
 }
 
+enum class SolutionFileType {
+    @SerializedName("TEXT_EDITOR") TEXT_EDITOR,
+    @SerializedName("TEXT_UPLOAD") TEXT_UPLOAD,
+
+}
+
 enum class AutoFeedbackResultType {
     @SerializedName("OK_V3") OK_V3,
     @SerializedName("OK_LEGACY") OK_LEGACY,

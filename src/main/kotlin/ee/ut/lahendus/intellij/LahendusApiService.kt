@@ -120,19 +120,8 @@ class LahendusApiService {
         ) {
             val allSubmissions = RequestUtils.fromJson<AllSubmissionsDTO>(it.body())
             allSubmissions.submissions?.let { result = allSubmissions.submissions }
-            result.forEach{
-                submission: Submission -> submission.resolveAutoFeedback()
-            }
         }
         return result
-    }
-
-    private fun Submission.resolveAutoFeedback() {
-        try {
-            feedbackAutoStr?.let {
-                autoFeedback = RequestUtils.fromJson(feedbackAutoStr, true)
-            }
-        } catch (ignored: JsonSyntaxException){}
     }
 
     private fun awaitLatestSubmission(detailedExercise: DetailedExercise, project: Project) {
@@ -142,12 +131,8 @@ class LahendusApiService {
             AWAIT_LATEST_EXERCISE_SUBMISSION_API_PATH.format(detailedExercise.courseId, detailedExercise.id, project),
             errorMessagePostfix
         ) {
-            val submission = RequestUtils.fromJson<Submission>(it.body())
-            submission.resolveAutoFeedback()
-
-            project.messageBus
-                .syncPublisher(LahendusProjectActionNotifier.LAHENDUS_PROJECT_ACTION_TOPIC)
-                .awaitLatestSubmission(detailedExercise, submission)
+            // await endpoint returns 200 and empty body, so need to perform the submission request again
+            getLatestSubmissionOrNull(detailedExercise, project)
         }
     }
 

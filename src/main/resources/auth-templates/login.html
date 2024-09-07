@@ -18,7 +18,7 @@
 <script src="{{ idp_url }}/auth/js/keycloak.js" onerror="handleScriptError()"></script>
 <script>
 
-    kc = Keycloak("http://127.0.0.1:{{ port }}/keycloak.json");
+    const kc = new Keycloak("http://127.0.0.1:{{ port }}/keycloak.json");
     kc.init({
         onLoad: 'login-required',
         checkLoginIframe: false,
@@ -26,6 +26,7 @@
         pkceMethod: 'S256'
 
     }).success((authenticated) => {
+    }).then(authenticated => {
         console.debug("Authenticated: " + authenticated);
 
         const accessTokenValidSec = kc.tokenParsed.exp - kc.tokenParsed.iat;
@@ -51,12 +52,15 @@
             body: JSON.stringify(tokenBody)
         })
             .then(response => {
-                if (response.ok) {
-                    container.textContent = "{{ success_msg }}";
-                } else {
-                    container.textContent = "{{ fail_msg }}";
-                }
-            });
+            if (response.ok) {
+                container.textContent = "{{ success_msg }}";
+            } else {
+                container.textContent = "{{ fail_msg }}";
+            }
+        }).catch(() => {
+            console.error("Failed to deliver tokens: ");
+            container.textContent = "{{ fail_msg }}";
+        });
 
     }).error(() => {
         console.error("Keycloak init failed");

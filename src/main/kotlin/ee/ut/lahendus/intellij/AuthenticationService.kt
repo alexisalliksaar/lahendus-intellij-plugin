@@ -10,6 +10,7 @@ import com.intellij.openapi.diagnostic.logger
 import com.sun.net.httpserver.HttpExchange
 import com.sun.net.httpserver.HttpHandler
 import com.sun.net.httpserver.HttpServer
+import ee.ut.lahendus.intellij.ui.UiController
 import ee.ut.lahendus.intellij.ui.language.LanguageProvider
 import java.io.IOException
 import java.io.InputStream
@@ -28,6 +29,16 @@ class AuthenticationService : Disposable {
 
     private var accessToken: AuthenticationToken? = null
     private var refreshToken: AuthenticationToken? = null
+
+    init {
+        ApplicationManager.getApplication().messageBus.connect(this)
+            .subscribe(LahendusApplicationActionNotifier.LAHENDUS_APPLICATION_ACTION_TOPIC,
+                object : LahendusApplicationActionNotifier {
+                    override fun authenticationSuccessful() {
+                        UiController.userAuthenticatedTrue()
+                    }
+                })
+    }
 
     private fun startServer() {
 

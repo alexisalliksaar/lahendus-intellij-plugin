@@ -126,9 +126,8 @@ class AutoFeedback(
             }
         }
 
-        fun Submission.formatAutoFeedback(): FormattedAutoFeedback {
-            return this.autoFeedback?.let { formatAutoFeedback(it) } ?:
-                FormattedAutoFeedback(this.feedbackAutoStr.orEmpty(), (this.gradeAuto?.toString() ?: "-"))
+        fun Submission.formatAutoFeedback(): FormattedAutoFeedback? {
+            return this.autoAssessment?.autoFeedback?.let { formatAutoFeedback(it) }
         }
 
         data class FormattedAutoFeedback(val autoFeedback: String?, val autoGrade: String)

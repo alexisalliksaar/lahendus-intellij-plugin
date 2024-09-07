@@ -16,9 +16,9 @@ import com.intellij.ui.dsl.builder.panel
 import com.intellij.util.ui.JBFont
 import com.intellij.util.ui.JBUI
 import ee.ut.lahendus.intellij.LahendusApiService
-import ee.ut.lahendus.intellij.data.AutoFeedback
 import ee.ut.lahendus.intellij.data.AutoFeedback.Formatter.formatAutoFeedback
 import ee.ut.lahendus.intellij.data.DetailedExercise
+import ee.ut.lahendus.intellij.data.GraderType
 import ee.ut.lahendus.intellij.data.Submission
 import ee.ut.lahendus.intellij.ui.language.LanguageProvider
 import java.awt.BorderLayout
@@ -212,13 +212,15 @@ class SelectedExerciseTab(val project: Project) : SimpleToolWindowPanel(true), D
 
             val panel = panel {
                 row {
-                    val latestSubmissionLabel = label(LanguageProvider.languageModel!!.selectedExerciseTab.latestSubmissionLabel)
+                    val latestSubmissionLabel =
+                        label(LanguageProvider.languageModel!!.selectedExerciseTab.latestSubmissionLabel)
                     latestSubmissionLabel.component.font = JBFont.h4()
                 }
                 if (submission.submissionTime != null) {
                     row {
-                        label("${LanguageProvider.languageModel!!.selectedExerciseTab.submissionTimePrefix}: " +
-                                UiController.formattedDate(submission.submissionTime)
+                        label(
+                            "${LanguageProvider.languageModel!!.selectedExerciseTab.submissionTimePrefix}: " +
+                                    UiController.formattedDate(submission.submissionTime)
                         )
                     }
                 }
@@ -226,51 +228,29 @@ class SelectedExerciseTab(val project: Project) : SimpleToolWindowPanel(true), D
                     cell(submittedText).align(AlignX.FILL)
                 }
 
-                @Suppress("VARIABLE_WITH_REDUNDANT_INITIALIZER")
-                var formattedAutoFeedback: AutoFeedback.Formatter.FormattedAutoFeedback? = null
+                row {
+                    val pointsLabel = label(LanguageProvider.languageModel!!.selectedExerciseTab.pointsLabel)
+                    pointsLabel.component.font = JBFont.h4()
+                }
+                val grade = submission.grade?.grade ?: "-"
+                row {
+                    label("${grade}/${selectedExercise.threshold ?: "100"}")
+                }
+                row {
 
-                if (submission.gradeTeacher != null) {
+                    val graderType = submission.grade?.isAutoGrade
+                        ?.let { solveGraderType(it) }
+                        ?: selectedExercise.graderType
 
-                    @Suppress("DuplicatedCode")
-                    row {
-                        val pointsLabel = label(LanguageProvider.languageModel!!.selectedExerciseTab.pointsLabel)
-                        pointsLabel.component.font = JBFont.h4()
-                    }
-                    row {
-                        label("${submission.gradeTeacher}/${selectedExercise.threshold ?: "100"}")
-                    }
-                    row {
-                        label("${LanguageProvider.languageModel!!.selectedExerciseTab.gradingMethodLabelPrefix}: " +
-                                LanguageProvider.getGraderTypeLiteral(selectedExercise.graderType))
-                    }
-                    if (submission.feedbackTeacher != null) {
-                        row {
-                            val teacherFeedbackLabel = label(LanguageProvider.languageModel!!.selectedExerciseTab.teacherFeedbackLabel)
-                            teacherFeedbackLabel.component.font = JBFont.h4()
-                        }
-                        row {
-                            val teacherFeedback = JEditorPane()
-                            teacherFeedback.isEditable = false
-                            teacherFeedback.contentType = "text/plain"
-                            teacherFeedback.text = submission.feedbackTeacher
+                    label(
+                        "${LanguageProvider.languageModel!!.selectedExerciseTab.gradingMethodLabelPrefix}: " +
+                                LanguageProvider.getGraderTypeLiteral(graderType)
+                    )
+                }
 
-                            cell(teacherFeedback).align(AlignX.FILL)
-                        }
-                    }
-                } else {
-                    formattedAutoFeedback = submission.formatAutoFeedback()
-                    row {
-                        val pointsLabel = label(LanguageProvider.languageModel!!.selectedExerciseTab.pointsLabel)
-                        pointsLabel.component.font = JBFont.h4()
-                    }
-                    row {
-                        label("${formattedAutoFeedback.autoGrade}/${selectedExercise.threshold ?: "100"}")
-                    }
-                    row {
-                        label("${LanguageProvider.languageModel!!.selectedExerciseTab.gradingMethodLabelPrefix}: " +
-                                LanguageProvider.getGraderTypeLiteral(selectedExercise.graderType))
-                    }
-                    if (submission.feedbackAutoStr != null) {
+                if (submission.autoAssessment?.autoFeedback != null) {
+                    val formattedAutoFeedback = submission.formatAutoFeedback()
+                    if (formattedAutoFeedback?.autoFeedback != null) {
                         val autoFeedbackText = JEditorPane()
                         autoFeedbackText.isEditable = false
                         autoFeedbackText.contentType = "text/plain"
@@ -280,9 +260,15 @@ class SelectedExerciseTab(val project: Project) : SimpleToolWindowPanel(true), D
                         }
                     }
                 }
+
+                // TODO: Teacher feedback
             }
 
             feedbackPanelContent!!.add(panel)
+        }
+
+        private fun solveGraderType(isAutoGrade: Boolean): GraderType {
+            return if (isAutoGrade) GraderType.AUTO else GraderType.TEACHER
         }
     }
 }

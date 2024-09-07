@@ -1,50 +1,84 @@
+val pluginVersion = "1.1.1"
+val pluginName = "Lahendus"
+
 plugins {
     id("java")
     id("org.jetbrains.kotlin.jvm") version "1.9.21"
-    id("org.jetbrains.intellij") version "1.16.1"
+    id("org.jetbrains.intellij.platform") version "2.0.1"
 }
 
 group = "ee.ut.lahendus.intellij"
-version = "1.0.1-SNAPSHOT"
+version = pluginVersion
+
+kotlin {
+    jvmToolchain(21)
+}
 
 repositories {
     mavenCentral()
+    intellijPlatform {
+        defaultRepositories()
+    }
+}
+dependencies {
+    intellijPlatform {
+        create("PC", "2024.2.1")
+
+        instrumentationTools()
+        pluginVerifier()
+        zipSigner()
+    }
 }
 
-// Configure Gradle IntelliJ Plugin
-// Read more: https://plugins.jetbrains.com/docs/intellij/tools-gradle-intellij-plugin.html
-intellij {
-    version.set("2023.2.6")
-    type.set("PC") // Target IDE Platform - PyCharm Community Edition
+intellijPlatform {
+    buildSearchableOptions = false
 
-    plugins.set(listOf("PythonCore"))
+    pluginConfiguration {
+        id = "ee.ut.lahendus.intellij"
+        name = pluginName
+        version = pluginVersion
+        description = """
+    Integrates the Intellij Platform development environments with
+    <a href="https://lahendus.ut.ee/">Lahendus</a>,
+    a service operated by the
+    <a href="https://cs.ut.ee/en">Institute of Computer Science at the University of Tartu</a>,
+    where students submit their solutions for various exercises, such as their homework.
+    <br/>
+    <br/>
+    The plugin enables students to track their progress in completing exercises
+    and to submit the contents of their active editor directly from the IDE for a solution.
+    """.trimIndent()
+
+        ideaVersion {
+            sinceBuild = "242"
+            untilBuild = "242.*"
+        }
+
+        vendor {
+            name = "Alexis Alliksaar"
+        }
+    }
+
+    signing {
+        certificateChainFile = file("certificate/chain.crt")
+        privateKeyFile = file("certificate/private.pem")
+        password = System.getenv("PRIVATE_KEY_PASSWORD")
+    }
+
+    publishing {
+        token = System.getenv("PUBLISH_TOKEN")
+    }
+
+    pluginVerification {
+        ides {
+            recommended()
+        }
+    }
 }
+
 
 tasks {
-    buildSearchableOptions {
-        enabled = false
-    }
-    // Set the JVM compatibility versions
-    withType<JavaCompile> {
-        sourceCompatibility = "17"
-        targetCompatibility = "17"
-    }
-    withType<org.jetbrains.kotlin.gradle.tasks.KotlinCompile> {
-        kotlinOptions.jvmTarget = "17"
-    }
-
-    patchPluginXml {
-        sinceBuild.set("232")
-        untilBuild.set("241.*")
-    }
-
-    signPlugin {
-        certificateChainFile.set(file("certificate/chain.crt"))
-        privateKeyFile.set(file("certificate/private.pem"))
-        password.set(System.getenv("PRIVATE_KEY_PASSWORD"))
-    }
-
-    publishPlugin {
-        token.set(System.getenv("PUBLISH_TOKEN"))
+    wrapper {
+        gradleVersion = "8.10"
     }
 }

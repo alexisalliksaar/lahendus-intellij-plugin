@@ -8,7 +8,6 @@ import com.intellij.openapi.ui.MessageType
 import com.intellij.openapi.wm.ToolWindow
 import com.intellij.openapi.wm.ToolWindowManager
 import com.intellij.ui.content.Content
-import ee.ut.lahendus.intellij.AuthenticationService
 import ee.ut.lahendus.intellij.LahendusApiService
 import ee.ut.lahendus.intellij.LahendusApplicationActionNotifier
 import ee.ut.lahendus.intellij.LahendusProjectActionNotifier
@@ -16,7 +15,6 @@ import ee.ut.lahendus.intellij.data.Course
 import ee.ut.lahendus.intellij.data.CourseExercise
 import ee.ut.lahendus.intellij.data.DetailedExercise
 import ee.ut.lahendus.intellij.data.ExerciseStatus
-import ee.ut.lahendus.intellij.data.GraderType
 import ee.ut.lahendus.intellij.data.Submission
 import ee.ut.lahendus.intellij.ui.language.LanguageProvider
 import java.time.ZoneId
@@ -26,15 +24,9 @@ import java.time.format.DateTimeFormatter
 object UiController {
     var userAuthenticated: Boolean = false
 
-    init {
-        ApplicationManager.getApplication().messageBus.connect(service<AuthenticationService>())
-            .subscribe(LahendusApplicationActionNotifier.LAHENDUS_APPLICATION_ACTION_TOPIC,
-                object : LahendusApplicationActionNotifier {
-                    override fun authenticationSuccessful() {
-                        userAuthenticated = true
-                        requestCourses()
-                    }
-                })
+    fun userAuthenticatedTrue() {
+        userAuthenticated = true
+        requestCourses()
     }
 
     fun connectExercisesTabToMessageBus(exercisesTab: ExercisesTab) {
@@ -183,7 +175,7 @@ object UiController {
                     override fun awaitLatestSubmission(detailedExercise: DetailedExercise, submission: Submission) {
                         invokeLaterUI {
                             selectedExerciseTab.populateExerciseFeedbackContent(submission)
-                            resolveExerciseStatusAfterSubmission(detailedExercise, submission)?.let { status ->
+                            resolveExerciseStatusAfterSubmission(submission).let { status ->
                                 getExercisesTab(selectedExerciseTab.project)?.updateExerciseStatus(
                                     detailedExercise,
                                     status
@@ -202,20 +194,9 @@ object UiController {
     }
 
     fun resolveExerciseStatusAfterSubmission(
-        detailedExercise: DetailedExercise,
         submission: Submission
-    ): ExerciseStatus? {
-        if (detailedExercise.graderType == GraderType.AUTO) {
-            if (submission.gradeAuto != null && submission.gradeAuto >= (detailedExercise.threshold ?: 100))
-                return ExerciseStatus.COMPLETED
-            if (submission.gradeAuto != null)
-                return ExerciseStatus.STARTED
-        } else if (detailedExercise.graderType == GraderType.TEACHER) {
-            if (submission.gradeTeacher == null) {
-                return ExerciseStatus.UNGRADED
-            }
-        }
-        return null
+    ): ExerciseStatus {
+        return submission.submissionStatus
     }
 
     fun formattedDate(date: String): String {
